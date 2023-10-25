@@ -1,0 +1,183 @@
+header{
+    display: flex;
+    justify-content: space-around;
+    background-color: #c7bebe;
+}
+
+#dolar-container{
+    display: flex;
+    width: 60%;
+    justify-content: space-around;
+}
+
+header div{
+    display: flex;
+    align-items: center;
+}
+header h2, h4{
+    display: inline;
+    padding: 5px;
+}
+
+main{
+    display: flex; 
+}
+
+.container{
+    margin: 10px 10px;
+    border: 2px solid #6c757d;
+    border-radius: 10px;  
+}
+
+.opciones{
+    display: flex;
+}
+
+.opciones p{
+    display: flex;
+    align-items: center;
+    width: 40%;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.opciones select{
+    width: 60%;
+    margin-top: 10px;
+}
+
+.gnc{
+    display: flex;
+    justify-content: center;
+    margin: 10px 0px;
+}
+
+.p-gnc{
+    display: inline;
+    margin-right: 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.btn{
+    margin-bottom: 15px;
+}
+
+#mensajeValidacion, #mensajeValidacionCoberturas{
+    text-align: center;
+    color: red;
+    margin-bottom: 10px;
+}
+
+/* Estilo para las coberturas */
+.form-check{
+    display: flex;
+}
+
+.form-check-label{
+    margin-left: 25px;
+    margin-bottom: 10px;
+}
+
+#precioCoberturaA, #precioCoberturaB, #precioCoberturaC, #precioCoberturaD {
+    width: 100px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: auto;
+    text-align: center;
+}
+
+
+/* Modal */
+.modal{
+    background-color: rgba(196, 187, 187, 0.7);
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    position: fixed;
+    display: none;
+}
+
+h2{
+    text-align: center;
+}
+
+.modal-content{
+    display: block;
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 5px;
+    width: 60%;
+}
+
+.close{
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+@media (max-width: 1200px) { 
+    .opciones{
+        display: block;
+        text-align: center;
+    }
+    
+    .opciones p{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        font-size: 20px;
+    }
+    .gnc p{
+        font-size: 20px;
+    }
+    
+    .opciones select{
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+}
+
+@media (max-width: 992px) {
+    main{
+        flex-wrap: wrap;
+        
+    }
+    .container{
+        margin: 10px auto;  
+    }
+    header{
+        display: block;
+        background-color: #c7bebe;
+        padding-bottom: 10px;
+    }
+    
+    header h2{
+        display: block;
+    }
+
+    #dolar-container-fecha{
+        display: block;
+        text-align: center;
+    }
+
+    #dolar-container{
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+    }
+}
+
+@media (max-width: 575.98px) { 
+    .container{
+        margin: 10px 10px;  
+    }
+}
