@@ -4,15 +4,12 @@ const listaModelo = document.getElementById("modelo");
 const listaVersiones = document.getElementById("version");
 const listaAnio = document.getElementById("anio");
 const listaColor = document.getElementById("color");
-const gncSi = document.getElementById("inlineRadio1");
-const gncNo = document.getElementById("inlineRadio2");
 const resultadosDiv = document.getElementById("resultados");
 const marcaSeleccionada = document.getElementById("marcaSeleccionada");
 const modeloSeleccionado = document.getElementById("modeloSeleccionado");
 const versionSeleccionada = document.getElementById("versionSeleccionada");
 const anioSeleccionado = document.getElementById("anioSeleccionado");
 const colorSeleccionado = document.getElementById("colorSeleccionado");
-const gncSeleccionado = document.getElementById("gncSeleccionado");
 const precioCompra = document.getElementById("dolarCompra")
 const precioVenta = document.getElementById("dolarVenta")
 const fechaActualizacion = document.getElementById("fechaActualizacion")
@@ -26,6 +23,12 @@ const radioButtonA = document.getElementById("coberturaA")
 const radioButtonB = document.getElementById("coberturaB")
 const radioButtonC = document.getElementById("coberturaC")
 const radioButtonD = document.getElementById("coberturaD")
+let modelos = {};
+
+let precioCoberturaA = 0;
+let precioCoberturaB = 0;
+let precioCoberturaC = 0;
+let precioCoberturaD = 0;
 
 const precioBaseA = 500
 const precioBaseB = 600
@@ -33,16 +36,28 @@ const precioBaseC = 700
 const precioBaseD = 900
 
 let precioMarcaCoberturaA = 0;
+let precioModeloCoberturaA = 0;
 let precioColorCoberturaA = 0;
+let precioVersionCoberturaA = 0;
+let precioAnioCoberturaA = 0;
+
 let precioMarcaCoberturaB = 0;
+let precioModeloCoberturaB = 0;
 let precioColorCoberturaB = 0;
+let precioVersionCoberturaB = 0;
+let precioAnioCoberturaB = 0;
+
 let precioMarcaCoberturaC = 0;
+let precioModeloCoberturaC = 0;
 let precioColorCoberturaC = 0;
+let precioVersionCoberturaC = 0;
+let precioAnioCoberturaC = 0;
+
 let precioMarcaCoberturaD = 0;
+let precioModeloCoberturaD = 0;
 let precioColorCoberturaD = 0;
-
-
-
+let precioVersionCoberturaD = 0;
+let precioAnioCoberturaD = 0;
 
 
 // Creamos un objeto con los datos de cada marca y sus modelos
@@ -70,13 +85,12 @@ const colores = ["Blanco", "Negro", "Rojo", "Azul", "Gris", "Plata"];
 
 // Definimos la clase Seguro para crear objetos con los datos que se seleccionan
 class Seguro {
-    constructor(marca, modelo, version, anio, color, gnc) {
+    constructor(marca, modelo, version, anio, color) {
         this.marca = marca;
         this.modelo = modelo;
         this.version = version;
         this.anio = anio;
         this.color = color;
-        this.gnc = gnc;
     }
 }
 
@@ -86,16 +100,15 @@ Object.keys(modelosPorMarca).forEach((marca) => {
     optionMarca.value = marca
     optionMarca.textContent = marca;
     listaMarca.appendChild(optionMarca);
-    
 });
 
 
 // Agregar un evento de cambio a la lista de marcas
-listaMarca.addEventListener("change", function () {
+listaMarca.addEventListener("change", () => {
     const marcaSeleccionada = listaMarca.value;
 
     // Obtenemos los modelos correspondiente a la marca seleccionada
-    const modelos = modelosPorMarca[marcaSeleccionada];
+    modelos = modelosPorMarca[marcaSeleccionada];
     
     listaModelo.innerHTML = ''
     // Llenar la lista de modelos
@@ -130,12 +143,8 @@ colores.forEach((color) => {
     listaColor.appendChild(optionColor);
 });
 
-
-
-
-
 // Limpiamos el mensaje de validación luego de que se selecciona la opción faltante
-listaMarca.addEventListener("change", function () {   
+listaMarca.addEventListener("change",  () => {   
     // Creamos un array con todas las marcas
     const marcas = Object.keys(modelosPorMarca);
     // Buscamos el indice de la marca seleccionada y le sumamos 1 para no multiplicar por 0 el primer valor de la marca
@@ -147,69 +156,99 @@ listaMarca.addEventListener("change", function () {
     precioMarcaCoberturaC = precioBaseC * indice;
     precioMarcaCoberturaD = precioBaseD * indice;
     mostrarPrecios ();
-    console.log(precioMarcaCoberturaA);
 
     mensajeValidacion.innerHTML = ""; 
 });
-listaModelo.addEventListener("change", function () {
+
+listaModelo.addEventListener("change", () => {
+    // Tomamos el indice de la versión elegida y le sumamos 1
+    const indice = modelos.indexOf(listaModelo.value);
+    // Multiplicamos el valor del precio base por el indice
+    precioModeloCoberturaA = precioBaseA * indice; 
+    precioModeloCoberturaB = precioBaseB * indice;
+    precioModeloCoberturaC = precioBaseC * indice;
+    precioModeloCoberturaD = precioBaseD * indice;
+    mostrarPrecios ();
+
     mensajeValidacion.innerHTML = "";
 });
-listaVersiones.addEventListener("change", function () {
+
+listaVersiones.addEventListener("change", () => {
+    // Tomamos el indice del color elegido y le sumamos 1
+    const indice = versiones.indexOf(listaVersiones.value) + 1;
+    // Multiplicamos el valor del precio base por el indice
+    precioVersionCoberturaA = precioBaseA * indice; 
+    precioVersionCoberturaB = precioBaseB * indice;
+    precioVersionCoberturaC = precioBaseC * indice;
+    precioVersionCoberturaD = precioBaseD * indice;
+    mostrarPrecios ();
+
     mensajeValidacion.innerHTML = "";
 });
-listaAnio.addEventListener("change", function () {
-    const digitos = listaAnio.value % 100;
+
+listaAnio.addEventListener("change", () => {
+    const digito = listaAnio.value % 100;
     
-    console.log(listaAnio.value % 100);
+    if (digito < 11) {
+        numero = 0.5
+    } else {
+        if (digito < 21) {
+            numero = 1.5
+        } else {
+            numero = 2
+        }
+        
+    }
+
+    precioAnioCoberturaA = precioBaseA * numero; 
+    precioAnioCoberturaB = precioBaseB * numero;
+    precioAnioCoberturaC = precioBaseC * numero;
+    precioAnioCoberturaD = precioBaseD * numero;
+    mostrarPrecios ();
+
     mensajeValidacion.innerHTML = "";
 });
-listaColor.addEventListener("change", function () {
+
+listaColor.addEventListener("change", () => {
     // Tomamos el indice del color elegido y le sumamos 1
     const indice = colores.indexOf(listaColor.value) + 1;
     // Multiplicamos el valor del precio base por el indice
-    precioColorCoberturaA = precioBaseA * indice; 
-    precioColorCoberturaB = precioBaseB * indice;
-    precioColorCoberturaC = precioBaseC * indice;
-    precioColorCoberturaD = precioBaseD * indice;
+    precioColorCoberturaA = precioBaseA * indice * 0.1; 
+    precioColorCoberturaB = precioBaseB * indice * 0.1;
+    precioColorCoberturaC = precioBaseC * indice * 0.1;
+    precioColorCoberturaD = precioBaseD * indice * 0.1;
     mostrarPrecios (); 
 
     mensajeValidacion.innerHTML = "";
 });
-gncSi.addEventListener("change", function () {
-    mensajeValidacion.innerHTML = "";
-});
-gncNo.addEventListener("change", function () {
-    mensajeValidacion.innerHTML = "";
-});
-radioButtonA.addEventListener("change", function () {
-    mensajeValidacionCoberturas.innerHTML = "";
-});
-radioButtonB.addEventListener("change", function () {
-    mensajeValidacionCoberturas.innerHTML = "";
-});
-radioButtonC.addEventListener("change", function () {
-    mensajeValidacionCoberturas.innerHTML = "";
-});
-radioButtonD.addEventListener("change", function () {
-    mensajeValidacionCoberturas.innerHTML = "";
-});
 
+radioButtonA.addEventListener("change", () => {
+    mensajeValidacionCoberturas.innerHTML = "";
+});
+radioButtonB.addEventListener("change", () => {
+    mensajeValidacionCoberturas.innerHTML = "";
+});
+radioButtonC.addEventListener("change", () => {
+    mensajeValidacionCoberturas.innerHTML = "";
+});
+radioButtonD.addEventListener("change", () => {
+    mensajeValidacionCoberturas.innerHTML = "";
+});
 
 
 // Agregar un evento de clic al botón "cotizar"
-document.querySelector("button").addEventListener("click", function (e) {
+document.querySelector("button").addEventListener("click", (e) => {
     // Obtener los valores seleccionados
     const marca = listaMarca.value;
     const modelo = listaModelo.value;
     const version = listaVersiones.value;
     const anio = listaAnio.value;
     const color = listaColor.value;
-    const gnc = valorGnc ();
 
     // Validamos que se seleccionen todas las opciones
     const cond = "Seleccioná una opción";
     
-    if ( marca === cond || modelo === cond || version === cond || anio === cond || color === cond || gnc === cond
+    if ( marca === cond || modelo === cond || version === cond || anio === cond || color === cond
     ) {
         e.preventDefault(); // Evita el envío si no se ha realizado una selección válida
         mensajeValidacion.textContent = "Por favor, seleccioná todas las opciones.";
@@ -221,7 +260,28 @@ document.querySelector("button").addEventListener("click", function (e) {
         }
         else {
             // Creamos el objeto seguro1
-            const seguro1 = new Seguro(marca, modelo, version, anio, color, gnc);
+            const seguro1 = new Seguro(marca, modelo, version, anio, color);
+            
+            if (radioButtonA.checked) {
+                tipoCobertura = "A";
+                precioCobertura = precioCoberturaA;
+            } else {
+                if (radioButtonB.checked) {
+                    tipoCobertura = "B";
+                    precioCobertura = precioCoberturaB;
+                } else {
+                    if (radioButtonC.checked) {
+                        tipoCobertura = "C";
+                        precioCobertura = precioCoberturaC;
+                    } else {
+                        if (radioButtonD.checked) {
+                            tipoCobertura = "D";
+                            precioCobertura = precioCoberturaD;
+                        } 
+                    }
+                }
+            }
+
 
             setTimeout(() => {
                 const cotizacionInfo = document.getElementById("cotizacionInfo");
@@ -233,13 +293,15 @@ document.querySelector("button").addEventListener("click", function (e) {
             setTimeout(() => {
                 const cotizacionInfo = document.getElementById("cotizacionInfo");
                 cotizacionInfo.innerHTML = `
-                        <p>Marca: ${seguro1.marca}</p>
-                        <p>Modelo: ${seguro1.modelo}</p>
-                        <p>Versión: ${seguro1.version}</p>
-                        <p>Año: ${seguro1.anio}</p>
-                        <p>Color: ${seguro1.color}</p>
-                        <p>GNC: ${seguro1.gnc}</p>
+                        <p><span>Marca:</span> ${seguro1.marca}</p>
+                        <p><span>Modelo:</span> ${seguro1.modelo}</p>
+                        <p><span>Versión:</span> ${seguro1.version}</p>
+                        <p><span>Año:</span> ${seguro1.anio}</p>
+                        <p><span>Color:</span> ${seguro1.color}</p>
+                        <p><span>Tipo cobertura:</span> ${tipoCobertura}<p>
+                        <p><span>Precio total:</span> $${precioCobertura}<p>
                 `;
+                cotizacionInfo.classList.add("parrafo-estilo"); // Agrega una clase CSS
                 showModal();
             }, 3000);
         }
@@ -263,8 +325,10 @@ const showModal = () => {
         listaVersiones.selectedIndex = 0;
         listaAnio.selectedIndex = 0;
         listaColor.selectedIndex = 0;
-        gncSi.checked = false; // Deseleccione el botón "SI"
-        gncNo.checked = false; // Deseleccione el botón "NO"
+        radioButtonA.checked = false;
+        radioButtonB.checked = false;
+        radioButtonC.checked = false;
+        radioButtonD.checked = false;
         mensajeValidacion.innerHTML = "";
     });
 
@@ -277,57 +341,54 @@ const showModal = () => {
             listaVersiones.selectedIndex = 0;
             listaAnio.selectedIndex = 0;
             listaColor.selectedIndex = 0;
-            gncSi.checked = false; // Deseleccione el botón "SI"
-            gncNo.checked = false; // Deseleccione el botón "NO"
+            radioButtonA.checked = false;
+            radioButtonB.checked = false;
+            radioButtonC.checked = false;
+            radioButtonD.checked = false;
             mensajeValidacion.innerHTML = "";
         }
     });
 };
 
 // URL de la API del dólar blue
-// const apiUrl = "https://dolarapi.com/v1/dolares/blue";
+const apiUrl = "https://dolarapi.com/v1/dolares/blue";
 
-// // Función para obtener la cotización del dólar blue
-// const getDolarBlue = () => {
-//     // Realizar una solicitud GET a la API
-//     fetch(apiUrl)
-//         .then((response) => {
-//             if (!response.ok) {
-//                 throw new Error(
-//                     `No se pudo obtener la cotización del dólar blue. Código de estado: ${response.status}`
-//                     );
-//                 }
-//                 return response.json();
-//             })
-//             .then((data) => {
-//                 precioCompra.textContent = `$${data.compra}`
-//                 precioVenta.textContent = `$${data.venta}`
-//                 var fecha = new Date(data.fechaActualizacion);
-//                 // Obtenemos los componentes de la fecha
-//                 const dia = fecha.getDate();
-//                 const mes = fecha.getMonth() + 1; // Los meses comienzan desde 0, entonces sumamos 1
-//                 const anio = fecha.getFullYear();
-//                 const hora = fecha.getHours();
-//                 const minutos = fecha.getMinutes();
+// Función para obtener la cotización del dólar blue
+const getDolarBlue = () => {
+    // Realizar una solicitud GET a la API
+    fetch(apiUrl)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(
+                    `No se pudo obtener la cotización del dólar blue. Código de estado: ${response.status}`
+                    );
+                }
+                return response.json();
+            })
+            .then((data) => {
+                precioCompra.textContent = `$${data.compra}`
+                precioVenta.textContent = `$${data.venta}`
+                var fecha = new Date(data.fechaActualizacion);
+                // Obtenemos los componentes de la fecha
+                const dia = fecha.getDate();
+                const mes = fecha.getMonth() + 1; // Los meses comienzan desde 0, entonces sumamos 1
+                const anio = fecha.getFullYear();
+                const hora = fecha.getHours();
+                const minutos = fecha.getMinutes();
 
-//                 const fechaFormateada = `${hora.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')} ${dia.toString().padStart(2, '0')}/${mes.toString().padStart(2, '0')}/${anio}`;
+                const fechaFormateada = `${hora.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')} ${dia.toString().padStart(2, '0')}/${mes.toString().padStart(2, '0')}/${anio}`;
 
-//                 console.log(fechaFormateada);
-//                 fechaActualizacion.textContent = fechaFormateada
+                console.log(fechaFormateada);
+                fechaActualizacion.textContent = fechaFormateada
                 
-//             })
-//         .catch((error) => {
-//             console.error("Error: " + error);
-//         });
-//     }
+            })
+        .catch((error) => {
+            console.error("Error: " + error);
+        });
+    }
     
-// // Llamar a la función para obtener la cotización del dólar blue
-// getDolarBlue();
-
-
-// Función para obtener el valor seleccionado del gnc
-
-const valorGnc = () =>{ return gncSi.checked ? "Si" : gncNo.checked ? "No" : "Seleccioná una opción";}
+// Llamar a la función para obtener la cotización del dólar blue
+getDolarBlue();
 
 const cobertura = () =>{
     // Obtén todos los radio buttons con el nombre 'flexRadioDefault'
@@ -348,11 +409,11 @@ const cobertura = () =>{
 
 // Mostrar los datos 
 const mostrarPrecios = () =>{
-    let precioCoberturaA = precioMarcaCoberturaA + precioColorCoberturaA;
-    let precioCoberturaB = precioMarcaCoberturaB + precioColorCoberturaB;
-    let precioCoberturaC = precioMarcaCoberturaC + precioColorCoberturaC;
-    let precioCoberturaD = precioMarcaCoberturaD + precioColorCoberturaD;
-
+    precioCoberturaA = precioMarcaCoberturaA + precioModeloCoberturaA + precioColorCoberturaA + precioVersionCoberturaA + precioAnioCoberturaA;
+    precioCoberturaB = precioMarcaCoberturaB + precioModeloCoberturaB + precioColorCoberturaB + precioVersionCoberturaB + precioAnioCoberturaB;
+    precioCoberturaC = precioMarcaCoberturaC + precioModeloCoberturaC + precioColorCoberturaC + precioVersionCoberturaC + precioAnioCoberturaC;
+    precioCoberturaD = precioMarcaCoberturaD + precioModeloCoberturaD + precioColorCoberturaD + precioVersionCoberturaD + precioAnioCoberturaD;
+    
     precioA.textContent = `$${precioCoberturaA}`
     precioB.textContent = `$${precioCoberturaB}`
     precioC.textContent = `$${precioCoberturaC}`
